@@ -1,15 +1,20 @@
-import React from 'react'
+import React, { useState } from "react";
 
 // Suggested initial states
-const initialMessage = ''
-const initialEmail = ''
-const initialSteps = 0
-const initialIndex = 4 // the index the "B" is at
+const initialMessage = "";
+const initialEmail = "";
+const initialSteps = 0;
+const initialIndex = 4; // the index the "B" is at
 
 export default function AppFunctional(props) {
   // THE FOLLOWING HELPERS ARE JUST RECOMMENDATIONS.
   // You can delete them and build your own logic from scratch.
-
+  const [state, setState] = useState({
+    initialMessage: initialMessage,
+    initialEmail: initialEmail,
+    initialSteps: initialSteps,
+    initialIndex: initialIndex,
+  });
   function getXY() {
     // It it not necessary to have a state to track the coordinates.
     // It's enough to know what index the "B" is at, to be able to calculate them.
@@ -29,6 +34,37 @@ export default function AppFunctional(props) {
     // This helper takes a direction ("left", "up", etc) and calculates what the next index
     // of the "B" would be. If the move is impossible because we are at the edge of the grid,
     // this helper should return the current index unchanged.
+    if (direction === "left") {
+      if (state.initialIndex % 3 === 0) {
+        return state.initialIndex;
+      } else {
+        return state.initialIndex--;
+      }
+    }
+
+    if (direction === "right") {
+      if ((state.initialIndex + 1) % 3 === 0 || state.initialIndex === 8) {
+        return state.initialIndex;
+      } else {
+        return state.initialIndex++;
+      }
+    }
+
+    if (direction === "up") {
+      if (state.initialIndex < 3) {
+        return state.initialIndex;
+      } else {
+        return state.initialIndex - 3;
+      }
+    }
+
+    if (direction === "down") {
+      if (state.initialIndex > 3) {
+        return state.initialIndex;
+      } else {
+        return state.initialIndex + 3;
+      }
+    }
   }
 
   function move(evt) {
@@ -51,28 +87,36 @@ export default function AppFunctional(props) {
         <h3 id="steps">You moved 0 times</h3>
       </div>
       <div id="grid">
-        {
-          [0, 1, 2, 3, 4, 5, 6, 7, 8].map(idx => (
-            <div key={idx} className={`square${idx === 4 ? ' active' : ''}`}>
-              {idx === 4 ? 'B' : null}
-            </div>
-          ))
-        }
+        {[0, 1, 2, 3, 4, 5, 6, 7, 8].map((idx) => (
+          <div key={idx} className={`square${idx === 4 ? " active" : ""}`}>
+            {idx === 4 ? "B" : null}
+          </div>
+        ))}
       </div>
       <div className="info">
         <h3 id="message"></h3>
       </div>
       <div id="keypad">
-        <button id="left">LEFT</button>
-        <button id="up">UP</button>
-        <button id="right">RIGHT</button>
-        <button id="down">DOWN</button>
-        <button id="reset">reset</button>
+        <button onClick={move(event)} id="left" name="left">
+          LEFT
+        </button>
+        <button onClick={move(event)} id="up" name="up">
+          UP
+        </button>
+        <button onClick={move(event)} id="right" name="right">
+          RIGHT
+        </button>
+        <button onClick={move(event)} id="down" name="down">
+          DOWN
+        </button>
+        <button id="reset" name="reset">
+          reset
+        </button>
       </div>
       <form>
         <input id="email" type="email" placeholder="type email"></input>
         <input id="submit" type="submit"></input>
       </form>
     </div>
-  )
+  );
 }
