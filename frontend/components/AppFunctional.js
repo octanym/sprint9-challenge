@@ -28,6 +28,12 @@ export default function AppFunctional(props) {
 
   function reset() {
     // Use this helper to reset all states to their initial values.
+    setState({
+      initialMessage: initialMessage,
+      initialEmail: initialEmail,
+      initialSteps: initialSteps,
+      initialIndex: initialIndex,
+    });
   }
 
   function getNextIndex(direction) {
@@ -59,7 +65,7 @@ export default function AppFunctional(props) {
     }
 
     if (direction === "down") {
-      if (state.initialIndex > 3) {
+      if (state.initialIndex > 6) {
         return state.initialIndex;
       } else {
         return state.initialIndex + 3;
@@ -69,7 +75,12 @@ export default function AppFunctional(props) {
 
   function move(evt) {
     // This event handler can use the helper above to obtain a new index for the "B",
-    // and change any states accordingly.
+    const {
+      target: { name },
+    } = evt;
+    console.log(getNextIndex(name));
+    // and change any states accordingly
+    setState({ ...state, initialIndex: getNextIndex(name) });
   }
 
   function onChange(evt) {
@@ -88,8 +99,11 @@ export default function AppFunctional(props) {
       </div>
       <div id="grid">
         {[0, 1, 2, 3, 4, 5, 6, 7, 8].map((idx) => (
-          <div key={idx} className={`square${idx === 4 ? " active" : ""}`}>
-            {idx === 4 ? "B" : null}
+          <div
+            key={idx}
+            className={`square${idx === state.initialIndex ? " active" : ""}`}
+          >
+            {idx === state.initialIndex ? "B" : null}
           </div>
         ))}
       </div>
@@ -97,19 +111,19 @@ export default function AppFunctional(props) {
         <h3 id="message"></h3>
       </div>
       <div id="keypad">
-        <button onClick={move(event)} id="left" name="left">
+        <button onClick={move} id="left" name="left">
           LEFT
         </button>
-        <button onClick={move(event)} id="up" name="up">
+        <button onClick={move} id="up" name="up">
           UP
         </button>
-        <button onClick={move(event)} id="right" name="right">
+        <button onClick={move} id="right" name="right">
           RIGHT
         </button>
-        <button onClick={move(event)} id="down" name="down">
+        <button onClick={move} id="down" name="down">
           DOWN
         </button>
-        <button id="reset" name="reset">
+        <button onClick={reset} id="reset" name="reset">
           reset
         </button>
       </div>
