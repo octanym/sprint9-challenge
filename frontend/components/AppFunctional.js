@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 
 // Suggested initial states
 const initialMessage = "";
@@ -15,15 +15,36 @@ export default function AppFunctional(props) {
     initialSteps: initialSteps,
     initialIndex: initialIndex,
   });
+
   function getXY() {
     // It it not necessary to have a state to track the coordinates.
     // It's enough to know what index the "B" is at, to be able to calculate them.
+    let x = 2;
+    let y = 2;
+
+    if (state.initialIndex >= 6) {
+      x = 3;
+      y = state.initialIndex - 6 + 1;
+    }
+
+    if (3 <= state.initialIndex <= 5) {
+      x = 2;
+      y = state.initialIndex - 2;
+    }
+
+    if (state.initialIndex <= 2) {
+      x = 1;
+      y = state.initialIndex + 1;
+    }
+    return [x, y];
   }
 
   function getXYMessage() {
     // It it not necessary to have a state to track the "Coordinates (2, 2)" message for the user.
     // You can use the `getXY` helper above to obtain the coordinates, and then `getXYMessage`
     // returns the fully constructed string.
+    const coords = getXY();
+    return `Coordinates (${coords[0]}, ${coords[1]})`;
   }
 
   function reset() {
@@ -42,6 +63,7 @@ export default function AppFunctional(props) {
     // this helper should return the current index unchanged.
     if (direction === "left") {
       if (state.initialIndex % 3 === 0) {
+        //setState({ ...state, initialMessage: "You can't go left" });
         return state.initialIndex;
       } else {
         return state.initialIndex--;
@@ -50,6 +72,7 @@ export default function AppFunctional(props) {
 
     if (direction === "right") {
       if ((state.initialIndex + 1) % 3 === 0 || state.initialIndex === 8) {
+        //setState({ ...state, initialMessage: "You can't go right" });
         return state.initialIndex;
       } else {
         return state.initialIndex++;
@@ -58,6 +81,7 @@ export default function AppFunctional(props) {
 
     if (direction === "up") {
       if (state.initialIndex < 3) {
+        //setState({ ...state, initialMessage: "You can't go up" });
         return state.initialIndex;
       } else {
         return state.initialIndex - 3;
@@ -66,6 +90,7 @@ export default function AppFunctional(props) {
 
     if (direction === "down") {
       if (state.initialIndex > 6) {
+        //setState({ ...state, initialMessage: "You can't go down" });
         return state.initialIndex;
       } else {
         return state.initialIndex + 3;
@@ -80,7 +105,10 @@ export default function AppFunctional(props) {
     } = evt;
     console.log(getNextIndex(name));
     // and change any states accordingly
-    setState({ ...state, initialIndex: getNextIndex(name) });
+    setState({
+      ...state,
+      initialIndex: getNextIndex(name),
+    });
   }
 
   function onChange(evt) {
@@ -91,10 +119,14 @@ export default function AppFunctional(props) {
     // Use a POST request to send a payload to the server.
   }
 
+  useEffect(() => {
+    setState({ ...state, initialMessage: getXYMessage() });
+  }, [state.initialIndex]);
+
   return (
     <div id="wrapper" className={props.className}>
       <div className="info">
-        <h3 id="coordinates">Coordinates (2, 2)</h3>
+        <h3 id="coordinates">{state.initialMessage}</h3>
         <h3 id="steps">You moved 0 times</h3>
       </div>
       <div id="grid">
