@@ -19,22 +19,22 @@ export default function AppFunctional(props) {
   function getXY() {
     // It it not necessary to have a state to track the coordinates.
     // It's enough to know what index the "B" is at, to be able to calculate them.
-    let x = 2;
-    let y = 2;
+    let x;
+    let y;
 
     if (state.initialIndex >= 6) {
-      x = 3;
-      y = state.initialIndex - 6 + 1;
+      x = (state.initialIndex % 6) + 1;
+      y = 3;
     }
 
-    if (3 <= state.initialIndex <= 5) {
-      x = 2;
-      y = state.initialIndex - 2;
+    if (3 <= state.initialIndex && state.initialIndex <= 5) {
+      x = state.initialIndex - 2;
+      y = 2;
     }
 
     if (state.initialIndex <= 2) {
-      x = 1;
-      y = state.initialIndex + 1;
+      x = state.initialIndex + 1;
+      y = 1;
     }
     return [x, y];
   }
