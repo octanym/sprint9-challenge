@@ -1,15 +1,15 @@
 import React, { useState, useEffect } from "react";
 
 // Suggested initial states
-const initialMessage = "Coordinates (2, 2)";
+const initialCoordinates = "Coordinates (2, 2)";
+const initialMessage = "";
 const initialEmail = "";
 const initialSteps = 0;
 const initialIndex = 4; // the index the "B" is at
 
 export default function AppFunctional(props) {
-  // THE FOLLOWING HELPERS ARE JUST RECOMMENDATIONS.
-  // You can delete them and build your own logic from scratch.
   const [state, setState] = useState({
+    initialCoordinates: initialCoordinates,
     initialMessage: initialMessage,
     initialEmail: initialEmail,
     initialSteps: initialSteps,
@@ -17,8 +17,6 @@ export default function AppFunctional(props) {
   });
 
   function getXY() {
-    // It it not necessary to have a state to track the coordinates.
-    // It's enough to know what index the "B" is at, to be able to calculate them.
     let x;
     let y;
 
@@ -40,16 +38,13 @@ export default function AppFunctional(props) {
   }
 
   function getXYMessage() {
-    // It it not necessary to have a state to track the "Coordinates (2, 2)" message for the user.
-    // You can use the `getXY` helper above to obtain the coordinates, and then `getXYMessage`
-    // returns the fully constructed string.
     const coords = getXY();
     return `Coordinates (${coords[0]}, ${coords[1]})`;
   }
 
   function reset() {
-    // Use this helper to reset all states to their initial values.
     setState({
+      initialCoordinates: initialCoordinates,
       initialMessage: initialMessage,
       initialEmail: initialEmail,
       initialSteps: initialSteps,
@@ -58,12 +53,9 @@ export default function AppFunctional(props) {
   }
 
   function getNextIndex(direction) {
-    // This helper takes a direction ("left", "up", etc) and calculates what the next index
-    // of the "B" would be. If the move is impossible because we are at the edge of the grid,
-    // this helper should return the current index unchanged.
     if (direction === "left") {
       if (state.initialIndex % 3 === 0) {
-        //setState({ ...state, initialMessage: "You can't go left" });
+        //setState({ ...state, initialCoordinates: "You can't go left" });
         return state.initialIndex;
       } else {
         return state.initialIndex--;
@@ -72,7 +64,7 @@ export default function AppFunctional(props) {
 
     if (direction === "right") {
       if ((state.initialIndex + 1) % 3 === 0 || state.initialIndex === 8) {
-        //setState({ ...state, initialMessage: "You can't go right" });
+        //setState({ ...state, initialCoordinates: "You can't go right" });
         return state.initialIndex;
       } else {
         return state.initialIndex++;
@@ -81,7 +73,7 @@ export default function AppFunctional(props) {
 
     if (direction === "up") {
       if (state.initialIndex < 3) {
-        //setState({ ...state, initialMessage: "You can't go up" });
+        //setState({ ...state, initialCoordinates: "You can't go up" });
         return state.initialIndex;
       } else {
         return state.initialIndex - 3;
@@ -90,7 +82,7 @@ export default function AppFunctional(props) {
 
     if (direction === "down") {
       if (state.initialIndex > 6) {
-        //setState({ ...state, initialMessage: "You can't go down" });
+        //setState({ ...state, initialCoordinates: "You can't go down" });
         return state.initialIndex;
       } else {
         return state.initialIndex + 3;
@@ -105,10 +97,10 @@ export default function AppFunctional(props) {
     } = evt;
     console.log(getNextIndex(name));
     // and change any states accordingly
+    // maybe use a ref to update state.initialSteps if ref.curr for index != ref.prev
     setState({
       ...state,
       initialIndex: getNextIndex(name),
-      initialSteps: (state.initialSteps += 1),
     });
   }
 
@@ -121,13 +113,17 @@ export default function AppFunctional(props) {
   }
 
   useEffect(() => {
-    setState({ ...state, initialMessage: getXYMessage() });
+    setState({
+      ...state,
+      initialCoordinates: getXYMessage(),
+      initialSteps: (state.initialSteps += 1),
+    });
   }, [state.initialIndex]);
 
   return (
     <div id="wrapper" className={props.className}>
       <div className="info">
-        <h3 id="coordinates">{state.initialMessage}</h3>
+        <h3 id="coordinates">{state.initialCoordinates}</h3>
         <h3 id="steps">You moved {state.initialSteps} times</h3>
       </div>
       <div id="grid">
