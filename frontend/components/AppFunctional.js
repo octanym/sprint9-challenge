@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 
 // Suggested initial states
-const initialMessage = "";
+const initialMessage = "Coordinates (2, 2)";
 const initialEmail = "";
 const initialSteps = 0;
 const initialIndex = 4; // the index the "B" is at
@@ -108,6 +108,7 @@ export default function AppFunctional(props) {
     setState({
       ...state,
       initialIndex: getNextIndex(name),
+      initialSteps: (state.initialSteps += 1),
     });
   }
 
@@ -127,7 +128,7 @@ export default function AppFunctional(props) {
     <div id="wrapper" className={props.className}>
       <div className="info">
         <h3 id="coordinates">{state.initialMessage}</h3>
-        <h3 id="steps">You moved 0 times</h3>
+        <h3 id="steps">You moved {state.initialSteps} times</h3>
       </div>
       <div id="grid">
         {[0, 1, 2, 3, 4, 5, 6, 7, 8].map((idx) => (
