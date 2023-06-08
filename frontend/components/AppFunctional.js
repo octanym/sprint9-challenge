@@ -81,7 +81,7 @@ export default function AppFunctional(props) {
     }
 
     if (direction === "down") {
-      if (state.initialIndex > 6) {
+      if (state.initialIndex >= 6) {
         //setState({ ...state, initialCoordinates: "You can't go down" });
         return state.initialIndex;
       } else {
@@ -95,30 +95,31 @@ export default function AppFunctional(props) {
     const {
       target: { name },
     } = evt;
-    console.log(getNextIndex(name));
-    // and change any states accordingly
-    // maybe use a ref to update state.initialSteps if ref.curr for index != ref.prev
-    setState({
-      ...state,
-      initialIndex: getNextIndex(name),
-    });
+
+    if (getNextIndex(name) === state.initialIndex) {
+      return setState({ ...state, initialMessage: `You can't go ${name}` });
+    } else {
+      // and change any states accordingly
+      return setState({
+        ...state,
+        initialCoordinates: getXYMessage(),
+        initialMessage: "",
+        initialSteps: (state.initialSteps += 1),
+        initialIndex: getNextIndex(name),
+      });
+    }
   }
 
   function onChange(evt) {
     // You will need this to update the value of the input.
+    const {
+      target: { name, value },
+    } = evt;
   }
 
   function onSubmit(evt) {
     // Use a POST request to send a payload to the server.
   }
-
-  useEffect(() => {
-    setState({
-      ...state,
-      initialCoordinates: getXYMessage(),
-      initialSteps: (state.initialSteps += 1),
-    });
-  }, [state.initialIndex]);
 
   return (
     <div id="wrapper" className={props.className}>
@@ -137,7 +138,7 @@ export default function AppFunctional(props) {
         ))}
       </div>
       <div className="info">
-        <h3 id="message"></h3>
+        <h3 id="message">{state.initialMessage}</h3>
       </div>
       <div id="keypad">
         <button onClick={move} id="left" name="left">
