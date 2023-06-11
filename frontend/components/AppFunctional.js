@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 
 // Suggested initial states
-const initialCoordinates = "Coordinates (2, 2)";
+const initialCoordinates = "";
 const initialMessage = "";
 const initialEmail = "";
 const initialSteps = 0;
@@ -25,7 +25,7 @@ export default function AppFunctional(props) {
       y = 3;
     }
 
-    if (3 <= state.initialIndex && state.initialIndex <= 5) {
+    if (state.initialIndex > 2 && state.initialIndex < 6) {
       x = state.initialIndex - 2;
       y = 2;
     }
@@ -98,23 +98,19 @@ export default function AppFunctional(props) {
 
     if (getNextIndex(name) === state.initialIndex) {
       return setState({ ...state, initialMessage: `You can't go ${name}` });
-    } else {
-      // and change any states accordingly
-      return setState({
-        ...state,
-        initialCoordinates: getXYMessage(),
-        initialMessage: "",
-        initialSteps: (state.initialSteps += 1),
-        initialIndex: getNextIndex(name),
-      });
     }
+    // and change any states accordingly
+    return setState({
+      ...state,
+      initialCoordinates: getXYMessage(),
+      initialMessage: "",
+      initialSteps: (state.initialSteps += 1),
+      initialIndex: getNextIndex(name),
+    });
   }
 
   function onChange(evt) {
     // You will need this to update the value of the input.
-    const {
-      target: { name, value },
-    } = evt;
   }
 
   function onSubmit(evt) {
@@ -124,7 +120,7 @@ export default function AppFunctional(props) {
   return (
     <div id="wrapper" className={props.className}>
       <div className="info">
-        <h3 id="coordinates">{state.initialCoordinates}</h3>
+        <h3 id="coordinates">{getXYMessage()}</h3>
         <h3 id="steps">You moved {state.initialSteps} times</h3>
       </div>
       <div id="grid">
