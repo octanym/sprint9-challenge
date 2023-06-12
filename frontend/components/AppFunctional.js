@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import axios from "axios";
 
 // Suggested initial states
 const initialCoordinates = "";
@@ -55,7 +56,6 @@ export default function AppFunctional(props) {
   function getNextIndex(direction) {
     if (direction === "left") {
       if (state.initialIndex % 3 === 0) {
-        //setState({ ...state, initialCoordinates: "You can't go left" });
         return state.initialIndex;
       } else {
         return state.initialIndex--;
@@ -64,7 +64,6 @@ export default function AppFunctional(props) {
 
     if (direction === "right") {
       if ((state.initialIndex + 1) % 3 === 0 || state.initialIndex === 8) {
-        //setState({ ...state, initialCoordinates: "You can't go right" });
         return state.initialIndex;
       } else {
         return state.initialIndex++;
@@ -73,7 +72,6 @@ export default function AppFunctional(props) {
 
     if (direction === "up") {
       if (state.initialIndex < 3) {
-        //setState({ ...state, initialCoordinates: "You can't go up" });
         return state.initialIndex;
       } else {
         return state.initialIndex - 3;
@@ -82,7 +80,6 @@ export default function AppFunctional(props) {
 
     if (direction === "down") {
       if (state.initialIndex >= 6) {
-        //setState({ ...state, initialCoordinates: "You can't go down" });
         return state.initialIndex;
       } else {
         return state.initialIndex + 3;
@@ -111,10 +108,37 @@ export default function AppFunctional(props) {
 
   function onChange(evt) {
     // You will need this to update the value of the input.
+    const {
+      target: { name, value },
+    } = evt;
+
+    setState({ ...state, [name]: [value] });
   }
 
-  function onSubmit(evt) {
-    // Use a POST request to send a payload to the server.
+  function handleSubmit(evt) {
+    evt.preventDefault();
+
+    const [x, y] = getXY();
+
+    const [email] = state.initialEmail;
+
+    const payload = {
+      email: email,
+      x: x,
+      y: y,
+      steps: state.initialSteps,
+    };
+
+    axios
+      .post("http://localhost:9000/api/result", payload)
+      .then((res) => {
+        console.log(res.data);
+        setState({ ...state, initialMessage: res.data.message });
+      })
+      .catch((err) => {
+        console.log(err.message);
+        setState({ ...state, initialMessage: err.message });
+      });
   }
 
   return (
@@ -153,8 +177,15 @@ export default function AppFunctional(props) {
           reset
         </button>
       </div>
-      <form>
-        <input id="email" type="email" placeholder="type email"></input>
+      <form onSubmit={handleSubmit}>
+        <input
+          onChange={onChange}
+          name="initialEmail"
+          value={state.initialEmail}
+          id="email"
+          type="email"
+          placeholder="type email"
+        ></input>
         <input id="submit" type="submit"></input>
       </form>
     </div>
