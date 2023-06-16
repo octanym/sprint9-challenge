@@ -132,12 +132,18 @@ export default function AppFunctional(props) {
     axios
       .post("http://localhost:9000/api/result", payload)
       .then((res) => {
-        console.log(res.data);
-        setState({ ...state, initialMessage: res.data.message });
+        setState({
+          ...state,
+          initialEmail: "",
+          initialMessage: res.data.message,
+        });
       })
       .catch((err) => {
-        console.log(err.message);
-        setState({ ...state, initialMessage: err.message });
+        setState({
+          ...state,
+          initialEmail: "",
+          initialMessage: err.response.data.message,
+        });
       });
   }
 
