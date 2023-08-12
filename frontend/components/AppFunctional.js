@@ -150,8 +150,12 @@ export default function AppFunctional(props) {
   return (
     <div id="wrapper" className={props.className}>
       <div className="info">
-        <h3 id="coordinates">{getXYMessage()}</h3>
-        <h3 id="steps">You moved {state.initialSteps} times</h3>
+        <h3 data-testid="coordinates" id="coordinates">
+          {getXYMessage()}
+        </h3>
+        <h3 id="steps">{`You moved ${state.initialSteps} ${
+          state.initialSteps == 1 ? "time" : "times"
+        }`}</h3>
       </div>
       <div id="grid">
         {[0, 1, 2, 3, 4, 5, 6, 7, 8].map((idx) => (
